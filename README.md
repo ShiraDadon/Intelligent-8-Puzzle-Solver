@@ -1,15 +1,18 @@
 # Intelligent 8-Puzzle Solver
 
-This project is a Python-based implementation of the classic 8-puzzle problem, developed as part of an Artificial Intelligence course.
+An AI-based solver for the classic 8-puzzle problem, developed as part of an Artificial Intelligence course.
 
-## Overview
+The project implements and compares two search algorithms:
 
-The 8-puzzle is a sliding-tile puzzle played on a 3x3 board with 8 numbered tiles and one blank space.  
-The goal is to reach the target configuration by sliding tiles into the blank space.
+- **Breadth-First Search (BFS)**
+- **A\* Search** using Manhattan distance with linear conflict heuristic
 
-In this project, the blank tile is represented by `0`, and each puzzle state is represented as a list of 9 numbers.
+## Problem Description
 
-Goal state:
+The 8-puzzle is a sliding-tile puzzle played on a 3x3 board.  
+The board contains 8 numbered tiles and one blank space.
+
+The goal is to move the tiles, one step at a time, until the board reaches the goal configuration:
 
 ```text
 0 1 2
@@ -17,31 +20,41 @@ Goal state:
 6 7 8
 ```
 
-The project implements and compares two search algorithms:
+In this project, the blank tile is represented by `0`.
 
-- **Breadth-First Search (BFS)**
-- **A* Search** with Manhattan distance and linear conflict heuristic
+Each move slides one tile into the blank space.  
+For the output, the program prints the tile number that moved.
 
-The program evaluates each algorithm by printing the solution path, path length, and number of expanded nodes.
+## Board Representation
 
-## Features
+Each puzzle state is represented as a list of 9 integers.
 
-- Solves the 8-puzzle problem for valid 3x3 board configurations.
-- Implements both uninformed and informed AI search algorithms.
-- Uses efficient structures such as queues, sets, and a heap-based priority queue.
-- Includes input validation to ensure the board contains exactly the numbers `0` to `8`.
-- Outputs the moved tiles, solution length, and expanded node count for each algorithm.
+For example:
 
-## Algorithms
+```text
+1 4 0 5 8 2 3 6 7
+```
+
+represents the board:
+
+```text
+1 4 0
+5 8 2
+3 6 7
+```
+
+## Search Algorithms
 
 ### Breadth-First Search (BFS)
 
-BFS expands states level by level.  
-Since every move has the same cost, BFS guarantees an optimal solution in terms of the minimum number of moves.
+**BFS** is an uninformed search algorithm that expands states level by level.
 
-### A* Search
+Because every move has the same cost, **BFS** guarantees an optimal solution in terms of the minimum number of moves.  
+However, it may expand many states and require more memory.
 
-A* prioritizes states using:
+### A\* Search
+
+**A\*** is an informed search algorithm that prioritizes states using:
 
 ```text
 f(n) = g(n) + h(n)
@@ -52,37 +65,61 @@ Where:
 - `g(n)` is the actual cost from the initial state to the current state.
 - `h(n)` is the estimated cost from the current state to the goal.
 
-The heuristic used in this project combines:
+In this project, **A\*** uses:
 
 ```text
-Manhattan distance + 2 * linear conflicts
+Manhattan distance + 2 * number of linear conflicts
 ```
 
-Manhattan distance estimates how far each tile is from its goal position.  
-Linear conflict improves the estimate by detecting tiles that are in the correct row or column but block each other because they appear in the wrong order.
+This heuristic helps guide the search toward the goal and usually expands fewer states than **BFS**.
 
-## Usage
+## Heuristic
 
-### Requirements
+The heuristic combines two parts:
 
-- Python 3.x
-- Standard Python libraries only
+### Manhattan Distance
 
-### Run the Program
+Manhattan distance calculates how far each numbered tile is from its goal position by rows and columns.  
+The blank tile `0` is ignored.
+
+### Linear Conflict
+
+A linear conflict occurs when two tiles are already in their correct goal row or column, but appear in the wrong relative order.
+
+In that case, at least one of them must move out of the row or column and later return.  
+Therefore, each conflict adds two extra moves to the heuristic estimate.
+
+## Implementation Details
+
+The project is divided into several modules:
+
+- `Tiles.py` - program entry point, input validation, algorithm execution, and output printing.
+- `node.py` / `Node` - represents a puzzle state, including the board, parent state, path cost, and moved tile.
+- `state_space.py` / `StateSpace` - creates the initial and goal states and generates legal neighbor states.
+- `transition_model.py` / `TransitionModel` - applies a move and creates the next state.
+- `bfs.py` / `BFS` - implements Breadth-First Search.
+- `a_star.py` / `AStar` - implements A\* Search.
+- `heuristic.py` / `Heuristic` - implements Manhattan distance with linear conflict.
+- `priority_queue.py` / `PriorityQueue` - manages the A\* frontier using a heap.
+- `action.py`, `cost_func.py`, `constants.py` - supporting classes and constants.
+
+The main supporting structures are:
+
+- a queue for **BFS**
+- a heap-based priority queue for **A\***
+- a set of expanded states to avoid repeated expansions
+
+## How to Run
 
 From the project folder, run:
 
 ```bash
-python Tiles.py num1 num2 num3 num4 num5 num6 num7 num8 num9
-```
-
-Replace `num1` to `num9` with unique numbers from `0` to `8`.
-
-### Example
-
-```bash
 python Tiles.py 1 4 0 5 8 2 3 6 7
 ```
+
+The program receives exactly 9 numbers separated by spaces.
+
+The input must contain each number from `0` to `8` exactly once.
 
 ## Output
 
@@ -91,7 +128,7 @@ For each algorithm, the program prints:
 - Algorithm name
 - Path of moved tiles
 - Path length
-- Number of expanded nodes
+- Number of expanded states
 
 Example format:
 
@@ -106,23 +143,3 @@ Path :  ...
 Path length:  ...
 Expanded:  ...
 ```
-
-## File Structure
-
-- `Tiles.py` - main program entry point, input validation, algorithm execution, and output printing.
-- `bfs.py` - implementation of Breadth-First Search.
-- `a_star.py` - implementation of A* Search.
-- `heuristic.py` - Manhattan distance and linear conflict heuristic.
-- `node.py` - representation of a puzzle state.
-- `state_space.py` - creation of states and generation of valid neighbors.
-- `transition_model.py` - logic for applying moves and creating successor states.
-- `priority_queue.py` - heap-based priority queue used by A*.
-- `action.py`, `cost_func.py`, `constants.py` - supporting classes and constants.
-
-## Skills Demonstrated
-
-- AI search algorithms
-- Heuristic function design
-- State-space representation
-- Data structures: queues, sets, and priority queues
-- Clean modular Python implementation
