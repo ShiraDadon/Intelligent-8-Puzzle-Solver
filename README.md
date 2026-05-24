@@ -94,13 +94,13 @@ Therefore, each conflict adds two extra moves to the heuristic estimate.
 The project is divided into several modules:
 
 - `Tiles.py` - program entry point, input validation, algorithm execution, and output printing.
-- `node.py` / `Node` - represents a puzzle state, including the board, parent state, path cost, and moved tile.
-- `state_space.py` / `StateSpace` - creates the initial and goal states and generates legal neighbor states.
-- `transition_model.py` / `TransitionModel` - applies a move and creates the next state.
-- `bfs.py` / `BFS` - implements Breadth-First Search.
-- `a_star.py` / `AStar` - implements A\* Search.
-- `heuristic.py` / `Heuristic` - implements Manhattan distance with linear conflict.
-- `priority_queue.py` / `PriorityQueue` - manages the A\* frontier using a heap.
+- `node.py` - represents a puzzle state, including the board, parent state, path cost, and moved tile.
+- `state_space.py` - creates the initial and goal states and generates legal neighbor states.
+- `transition_model.py` - applies a move and creates the next state.
+- `bfs.py` - implements Breadth-First Search.
+- `a_star.py` - implements A\* Search.
+- `heuristic.py` - implements Manhattan distance with linear conflict.
+- `priority_queue.py`  - manages the A\* frontier using a heap.
 - `action.py`, `cost_func.py`, `constants.py` - supporting classes and constants.
 
 The main supporting structures are:
